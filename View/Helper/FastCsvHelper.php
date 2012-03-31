@@ -1,6 +1,6 @@
 <?php
 
-class FastCsvHelper extends AppHelper {
+class FastCSVHelper extends AppHelper {
 
     public $handle;
     public $table = array();
@@ -10,7 +10,7 @@ class FastCsvHelper extends AppHelper {
     public $to_encoding = 'sjis';
     public $from_encoding = 'utf8';
 
-    public function FastCsvHelper() {
+    public function FastCSVHelper() {
         $this->init();
     }
 
