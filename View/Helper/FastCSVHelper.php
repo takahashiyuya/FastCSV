@@ -95,7 +95,7 @@ class FastCSVHelper extends AppHelper {
      * @param mixed $modelClass The case of two-dimensional array was extracted with "CakePHP find()", to specify the name of that model. For example "User".
      * @return void
      */
-    public function fastExport($table = array(), $filename = null, $modelClass = false) {
+    public function fastExport($table, $filename = null, $modelClass = false) {
         if ($filename) {
             $this->setFilename($filename);
         }
@@ -202,6 +202,7 @@ class FastCSVHelper extends AppHelper {
      * @return void
      */
     public function export() {
+        $this->setFilename($this->filename);
         $this->setHeaders();
         mb_convert_variables($this->to_encoding, $this->from_encoding, $this->table);
         foreach ($this->table as $row) {
