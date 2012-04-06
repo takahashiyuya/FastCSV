@@ -11,7 +11,7 @@
 
 ##ダウンロード
 * このプラグインはGitHubにて公開されています。
-    *https://github.com/takahashiyuya/FastCSV/downloads
+    * https://github.com/takahashiyuya/FastCSV/downloads
 
 ##インストール
 * PluginフォルダにFastCSVフォルダを設置します。
