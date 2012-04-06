@@ -2,7 +2,7 @@
 version 0.8
 
 ##条件
-*CakePHP 2.x.x
+*CakePHP 2.x.x  
 *mb（マルチバイト文字列）が使用できる環境
 
 ##機能
