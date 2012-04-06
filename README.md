@@ -23,8 +23,8 @@
 ##注意点
 * CakePHPのfindでデータを抽出する際、recursive = 0 にする事を忘れないでください。
 * 目的のアクションにて以下の記述すると問題が解消するかもしれません。
-    *Configure::write('debug', 0);
-    *$this->layout = false;
+    * Configure::write('debug', 0);
+    * $this->layout = false;
 
 ##ライセンス
 * MIT License (http://www.opensource.org/licenses/mit-license.php)
