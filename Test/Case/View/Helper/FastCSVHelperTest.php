@@ -81,6 +81,19 @@ class FastCSVHelperTest extends CakeTestCase
         $this->assertEquals('4,bar', trim($csv[1]));
     }
 
+    public function test_fastExportForExcel()
+    {
+        $data = array(
+            array('id' => 2, 'tel' => '09012345678', 'name' => 'foo bar'),
+            array('id' => 4, 'tel' => '090-1234-5678', 'name' => 'ho"ge'),
+        );
+        $this->Helper->use_excel = true;
+        $this->Helper->fastExport($data);
+        $csv = file($this->Helper->path);
+        $this->assertEquals('"2",="09012345678","foo bar"', trim($csv[0]));
+        $this->assertEquals('"4","090-1234-5678","ho""ge"', trim($csv[1]));
+    }
+
     public function test_setRow()
     {
         $fruits = array(

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This is the FastCSVHelper class file. 
+ * This is the FastCSVHelper class file.
  *
  * PHP 5
  *
@@ -25,27 +25,27 @@ class FastCSVHelper extends AppHelper {
 
     /**
      * The file pointer must be valid, and must point to a file successfully opened by fopen() or fsockopen() (and not yet closed by fclose())
-     * 
+     *
      * @var resource
      */
     protected $handle;
 
     /**
-     * Array you want to CSV. 
+     * Array you want to CSV.
      *
      * @var array
      */
     public $table = array();
 
     /**
-     * The optional delimiter parameter sets the field delimiter (one character only). 
+     * The optional delimiter parameter sets the field delimiter (one character only).
      *
      * @var string
      */
     public $delimiter = ',';
 
     /**
-     * The optional enclosure parameter sets the field enclosure (one character only).  
+     * The optional enclosure parameter sets the field enclosure (one character only).
      *
      * @var string
      */
@@ -66,11 +66,18 @@ class FastCSVHelper extends AppHelper {
     public $to_encoding = 'sjis';
 
     /**
-     * Is specified by character code names before conversion. It is either an array, or a comma separated enumerated list. If from_encoding is not specified, the internal encoding will be used. 
+     * Is specified by character code names before conversion. It is either an array, or a comma separated enumerated list. If from_encoding is not specified, the internal encoding will be used.
      *
      * @var string
      */
     public $from_encoding = 'utf8';
+
+    /**
+     * If true, display the number 0 on MS Excel. for like telephone numbers they start with 0.
+     *
+     * @var bool
+     */
+    public $use_excel = false;
 
     /**
      * Constructor
@@ -89,7 +96,7 @@ class FastCSVHelper extends AppHelper {
 
     /**
      * Export a CSV fast and easy.
-     * 
+     *
      * @param array $table Two-dimensional array or array was extracted with "CakePHP find()".
      * @param mixed $filename The filename of exported CSV.
      * @param mixed $modelClass The case of two-dimensional array was extracted with "CakePHP find()", to specify the name of that model. For example "User".
@@ -109,7 +116,7 @@ class FastCSVHelper extends AppHelper {
 
     /**
      * To be formatted into a common two-dimensional array, the array was extracted with "CakePHP find()".
-     * 
+     *
      * @param array $table The array was extracted with "CakePHP find()".
      * @param type $modelClass The case of two-dimensional array was extracted with "CakePHP find()", to specify the name of that model. For example "User".
      * @return void
@@ -122,7 +129,7 @@ class FastCSVHelper extends AppHelper {
 
     /**
      * Set the Two-dimensional array.
-     * 
+     *
      * @param array $table Common Two-dimensional array.
      * @return void
      */
@@ -132,7 +139,7 @@ class FastCSVHelper extends AppHelper {
 
     /**
      * This is a function of lap setTable().
-     * 
+     *
      * @param array $table Common Two-dimensional array.
      * @return void
      */
@@ -143,7 +150,7 @@ class FastCSVHelper extends AppHelper {
     /**
      * Set the one-dimensional array.
      *
-     * @param array $row 
+     * @param array $row
      * @return void
      */
     public function setRow($row = array()) {
@@ -153,7 +160,7 @@ class FastCSVHelper extends AppHelper {
     /**
      * Set the one-dimensional array in the first line.
      *
-     * @param array $row 
+     * @param array $row
      * @return void
      */
     public function setFirstRow($row = array()) {
@@ -164,7 +171,7 @@ class FastCSVHelper extends AppHelper {
      * Set the one-dimensional array in the last line.
      * This is a function of lap setRow().
      *
-     * @param array $row 
+     * @param array $row
      * @return void
      */
     public function setLastRow($row = array()) {
@@ -174,7 +181,7 @@ class FastCSVHelper extends AppHelper {
     /**
      * Set the filename of the CSV.
      *
-     * @param type $filename 
+     * @param type $filename
      * @return void
      */
     public function setFilename($filename) {
@@ -186,7 +193,7 @@ class FastCSVHelper extends AppHelper {
 
     /**
      * Set some headers.
-     * 
+     *
      * @return void
      */
     public function setHeaders() {
@@ -198,16 +205,45 @@ class FastCSVHelper extends AppHelper {
 
     /**
      * Export a CSV.
-     * 
+     *
      * @return void
      */
     public function export() {
         $this->setFilename($this->filename);
         $this->setHeaders();
         mb_convert_variables($this->to_encoding, $this->from_encoding, $this->table);
+
+        if ($this->use_excel) {
+            $this->fputcsv4excel();
+            return;
+        }
+
         foreach ($this->table as $row) {
             fputcsv($this->handle, $row, $this->delimiter, $this->enclosure);
         }
     }
 
+    /**
+     * Export a CSV for MS Excel
+     *
+     * display the number 0. for like telephone numbers they start with 0.
+     * @return void
+     */
+    public function fputcsv4excel()
+    {
+        $str = '';
+        foreach ($this->table as $row) {
+            $tmp = array();
+            foreach ($row as $val) {
+                $val = str_replace('"', '""', $val);
+                $rhs = $this->enclosure;
+                $lhs = preg_match('/^0\d+$/', $val) ? '=' . $this->enclosure : $this->enclosure;
+                $tmp[] = $lhs . $val . $rhs;
+            }
+
+            $str .= implode($this->delimiter, $tmp) . "\n";
+        }
+
+        fwrite($this->handle, $str);
+    }
 }
